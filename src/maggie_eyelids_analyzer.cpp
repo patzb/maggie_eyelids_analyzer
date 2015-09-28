@@ -1,0 +1,73 @@
+#include "maggie_eyelids_analyzer/maggie_eyelids_analyzer.h"
+
+using namespace diagnostic_aggregator;
+using namespace std;
+
+PLUGINLIB_REGISTER_CLASS(MaggieEyelidsAnalyzer,  
+                         diagnostic_aggregator::MaggieEyelidsAnalyzer, 
+                         diagnostic_aggregator::Analyzer)
+
+	
+MaggieEyelidsAnalyzer::MaggieEyelidsAnalyzer() :
+  path_(""), nice_name_("Eyelids"), 
+  has_initialized_(false), has_eye_right_data_(false), has_eye_left_data_(false) { }
+
+
+MaggieEyelidsAnalyzer::~MaggieEyelidsAnalyzer() { }
+
+
+bool MaggieEyelidsAnalyzer::init(const string base_name, const ros::NodeHandle &n) { 
+  path_ = base_name + "/" + nice_name_;
+
+  // Make a "missing" item for the eyelid items
+  boost::shared_ptr<StatusItem> item_r(new StatusItem("Right Eyelid"));
+  eyelid_right_item_ = item_r;
+	
+  boost::shared_ptr<StatusItem> item_l(new StatusItem("Left Eyelid"));
+  eyelid_left_item_ = item_l;
+
+  has_initialized_ = true;
+  
+  return true;
+}
+
+
+bool MaggieEyelidsAnalyzer::match(const std::string name) {
+  if (name == "Right Eyelid" || name == "Left Eyelid")
+    return true;
+
+  return false;
+}
+
+
+bool MaggieEyelidsAnalyzer::analyze(const boost::shared_ptr<StatusItem> item) {
+  if (item->getName() == "Right Eyelid") {
+  	eyelid_right_item_ = item;
+ 	has_eye_right_data_ = true;
+
+    return true;
+  }
+	
+  if (item->getName() == "Left Eyelid") {
+  	eyelid_left_item_ = item;
+ 	has_eye_left_data_ = true;
+
+    return true;
+  }
+
+  return false;
+}
+
+
+vector<boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> > MaggieEyelidsAnalyzer::report()
+{
+  boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> eye_right_stat = eyelid_right_item_ ->toStatusMsg(path_);
+	
+  boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> eye_left_stat = eyelid_left_item_ ->toStatusMsg(path_);
+
+  vector<boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> > output;
+  output.push_back(eye_right_stat);
+  output.push_back(eye_left_stat);
+
+  return output;
+}

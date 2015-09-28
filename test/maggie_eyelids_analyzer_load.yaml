@@ -1,0 +1,6 @@
+analyzers: 
+  eyelids:
+    type: MaggieEyelidsAnalyzer
+    expected: [
+       'Right Eyelid',
+       'Left Eyelid']

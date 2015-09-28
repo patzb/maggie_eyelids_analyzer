@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/pat/catkin_ws/src/maggie_eyelids_analyzer/build/devel/setup.sh

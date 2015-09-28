@@ -1,0 +1,7 @@
+<library path="lib/libmaggie_eyelids_analyzer" >
+  <class name="MaggieEyelidsAnalyzer" type="diagnostic_aggregator::MaggieEyelidsAnalyzer" base_class_type="diagnostic_aggregator::Analyzer">
+    <description>
+      MaggieEyelidsAnalyzer is for error diagnostics.
+    </description>
+  </class>
+</library>
